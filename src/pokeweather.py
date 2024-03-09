@@ -1,4 +1,5 @@
 from flask import Flask, jsonify
+import requests
 
 app = Flask(__name__)
 
@@ -7,7 +8,14 @@ app = Flask(__name__)
 # Endpoint para obtener el tipo de un Pokemon segun su nombre
 @app.route('/pokemon/type/<nombre>')
 def get_pokemon_type(nombre):
-    pass
+    # Consultamos si existe el Pokemon con ese nombre
+    response = requests.get(f'https://pokeapi.co/api/v2/pokemon/{nombre.lower()}')
+    if response.status_code == 200:
+        pokemon_data = response.json()
+        types = [type_data['type']['name'] for type_data in pokemon_data['types']]
+        return jsonify({'name': name, 'types': types})
+    else:
+        return jsonify({'error': 'Pokemon no encontrado'}), 404
 
 # Endpoint para obtener un Pokemon al azar de un tipo/clase especifico
 @app.route('/pokemon/random/<tipo>')
