@@ -1,5 +1,6 @@
 from flask import Flask, jsonify
 import requests
+import random
 
 app = Flask(__name__)
 
@@ -13,14 +14,21 @@ def get_pokemon_type(nombre):
     if response.status_code == 200:
         pokemon_data = response.json()
         types = [type_data['type']['name'] for type_data in pokemon_data['types']]
-        return jsonify({'name': name, 'types': types})
+        return jsonify({'name': nombre, 'types': types})
     else:
         return jsonify({'error': 'Pokemon no encontrado'}), 404
 
 # Endpoint para obtener un Pokemon al azar de un tipo/clase especifico
 @app.route('/pokemon/random/<tipo>')
 def get_random_pokemon(tipo):
-    pass
+    # Consultamos si existe el tipo de Pokemon con ese nombre
+    response = requests.get(f'https://pokeapi.co/api/v2/type/{tipo.lower()}')
+    if response.status_code == 200:
+        type_data = response.json()
+        pokemon_nombre = [pokemon['pokemon']['name'] for pokemon in type_data['pokemon']]
+        return jsonify({'type': tipo, 'random_pokemon': random.choice(pokemon_nombre)}) #Usando random elegimos el nombre de un pokemos al azar
+    else:
+        return jsonify({'error': 'Type not found'}), 404
     
 # Endpoint para obtener el Pokemon con nombre mas largo segun tipo indicado
 @app.route('/pokemon/longest/<tipo>')
