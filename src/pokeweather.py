@@ -4,9 +4,16 @@ import random
 import openmeteo_requests
 import requests_cache
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token
+import string
+
+def generar_contrasena():
+    largo = 20
+    caracteres = string.ascii_letters + string.digits + string.punctuation
+    contrasena = ''.join(random.choice(caracteres) for _ in range(largo))
+    return contrasena
 
 app = Flask(__name__)
-app.config['JWT_SECRET_KEY'] = '12345'
+app.config['JWT_SECRET_KEY'] = generar_contrasena()
 jwt = JWTManager(app)
 
 # Configuracion de sesion de cache y reintento en caso de error para la API de Open-Meteo
