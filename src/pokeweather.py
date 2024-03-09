@@ -1,8 +1,65 @@
 from flask import Flask, jsonify
 import requests
 import random
+import openmeteo_requests
+import requests_cache
 
 app = Flask(__name__)
+
+# Configuracion de sesion de cache y reintento en caso de error para la API de Open-Meteo
+cache_session = requests_cache.CachedSession('.cache', expire_after=3600)
+openmeteo = openmeteo_requests.Client(session=cache_session)
+
+
+### ----- APIS consulta de clima ----- ###
+
+# API publica para obtenet las coordenadas mediante ubicacion aproximada por IP
+def obtener_coordenadas():
+    url = 'https://ipinfo.io/json'
+    respuesta = requests.get(url)
+    datos = respuesta.json()
+    coordenadas = datos['loc'].split(',')
+    return coordenadas
+
+# Obtencion de la temperatura actual
+def obtener_temperatura_actual(latitude, longitude):
+    
+    url = "https://api.open-meteo.com/v1/forecast"
+    params = {
+        "latitude": latitude,
+        "longitude": longitude,
+        "current": "temperature_2m"
+    }
+
+    responses = openmeteo.weather_api(url, params=params)
+    response = responses[0]
+    current = response.Current()
+    current_temperature_2m = current.Variables(0).Value()
+    return round(current_temperature_2m)
+
+
+### ----- Funcion que determina el tipo mas fuerte segun clima ----- ###
+
+# Funcion para determinar el tipo de Pokemon mas fuerte basado en la temperatura
+def get_tipo_mas_fuerte_segun_clima(temperatura):
+
+    # Agregue el resto de las clases en el else, limitando ICE hasta -10 Grados
+    if temperatura >= 30:
+        return 'fire'
+    elif temperatura >= 20:
+        return 'ground'
+    elif temperatura >= 10:
+        return 'normal'
+    elif temperatura >= 0:
+        return 'water'
+    elif temperatura >= -10:
+        return 'ice'
+    else:
+        types = ['unknown','dragon','shadow','dark','rock','grass','psychic','flying','bug','fighting''steel','ghost','electric''poison','fairy']
+        clase = random.choice(types)
+        return clase
+
+
 
 ### ----- Endpoints ----- ###
 
@@ -42,34 +99,18 @@ def get_longest_pokemon_name(tipo):
         return jsonify({'error': 'Tipo no encontrado'}), 404
 
 
-# Funcion para determinar el tipo de Pokemon mas fuerte basado en la temperatura
-def get_tipo_mas_fuerte_segun_clima(temperatura):
-
-    # Agregue el resto de las clases en el else, limitando ICE hasta -10 Grados
-    if temperatura >= 30:
-        return 'fire'
-    elif temperatura >= 20:
-        return 'ground'
-    elif temperatura >= 10:
-        return 'normal'
-    elif temperatura >= 0:
-        return 'water'
-    elif temperatura >= -10:
-        return 'ice'
-    else:
-        types = ['unknown','dragon','shadow','dark','rock','grass','psychic','flying','bug','fighting''steel','ghost','electric''poison','fairy']
-        clase = random.choice(types)
-        return clase
-
-
-
 # Endpoint para obtener un Pokemon al azar que contenga alguna de las letras 'I','A' o 'M' y que sea del tipo específico más fuerte en base al clima actual de tu ciudad
-# #### FALTA CONDICION DEL CLIMA ####
 @app.route('/pokemon/random/condicion')
 def get_random_pokemon_condicion():
 
-    tipo_mas_fuerte = get_tipo_mas_fuerte_segun_clima(-1)
+    # Obtener el clima actual
+    latitud, longitud = obtener_coordenadas()
+    temperatura = obtener_temperatura_actual(latitud, longitud)
 
+    # Determinar el tipo de Pokemon mas fuerte segun el clima
+    tipo_mas_fuerte = get_tipo_mas_fuerte_segun_clima(temperatura)
+
+    # Hacer la solicitud a la Poke API para obtener todos los Pokemon del tipo mas fuerte
     response = requests.get(f"https://pokeapi.co/api/v2/type/{tipo_mas_fuerte}")
     if response.status_code == 200:
         data = response.json()
