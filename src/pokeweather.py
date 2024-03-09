@@ -1,15 +1,23 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import requests
 import random
 import openmeteo_requests
 import requests_cache
+from flask_jwt_extended import JWTManager, jwt_required, create_access_token
 
 app = Flask(__name__)
+app.config['JWT_SECRET_KEY'] = '12345'
+jwt = JWTManager(app)
 
 # Configuracion de sesion de cache y reintento en caso de error para la API de Open-Meteo
 cache_session = requests_cache.CachedSession('.cache', expire_after=3600)
 openmeteo = openmeteo_requests.Client(session=cache_session)
 
+# Configurar conexion con base de datos > por ahora simulada
+users = {
+    "admin": "admin123",
+    "user": "user123"
+}
 
 ### ----- APIS consulta de clima ----- ###
 
@@ -60,11 +68,22 @@ def get_tipo_mas_fuerte_segun_clima(temperatura):
         return clase
 
 
+# Validacion de user y password 
+@app.route('/login', methods=['POST'])
+def login():
+    username = request.json.get('username', None)
+    password = request.json.get('password', None)
+    if username not in users or users[username] != password:
+        return jsonify({"msg": "Credenciales invalidas"}), 401
+    access_token = create_access_token(identity=username)
+    return jsonify(access_token=access_token), 200
+
 
 ### ----- Endpoints ----- ###
 
 # Endpoint para obtener el tipo de un Pokemon segun su nombre
 @app.route('/pokemon/type/<nombre>')
+@jwt_required()
 def get_pokemon_type(nombre):
     # Consultamos si existe el Pokemon con ese nombre
     response = requests.get(f'https://pokeapi.co/api/v2/pokemon/{nombre.lower()}')
@@ -77,6 +96,7 @@ def get_pokemon_type(nombre):
 
 # Endpoint para obtener un Pokemon al azar de un tipo/clase especifico
 @app.route('/pokemon/random/<tipo>')
+@jwt_required()
 def get_random_pokemon(tipo):
     # Consultamos si existe el tipo de Pokemon con ese nombre
     response = requests.get(f'https://pokeapi.co/api/v2/type/{tipo.lower()}')
@@ -89,6 +109,7 @@ def get_random_pokemon(tipo):
     
 # Endpoint para obtener el Pokemon con nombre mas largo segun tipo indicado
 @app.route('/pokemon/longest/<tipo>')
+@jwt_required()
 def get_longest_pokemon_name(tipo):
     response = requests.get(f'https://pokeapi.co/api/v2/type/{tipo.lower()}')
     if response.status_code == 200:
@@ -101,6 +122,7 @@ def get_longest_pokemon_name(tipo):
 
 # Endpoint para obtener un Pokemon al azar que contenga alguna de las letras 'I','A' o 'M' y que sea del tipo específico más fuerte en base al clima actual de tu ciudad
 @app.route('/pokemon/random/condicion')
+@jwt_required()
 def get_random_pokemon_condicion():
 
     # Obtener el clima actual
@@ -120,7 +142,7 @@ def get_random_pokemon_condicion():
         # Comprobamos si hay algun valor en la lista
         if filtered_pokemons:
             random_pokemon = random.choice(filtered_pokemons)
-            return jsonify({'random_pokemon_condition': random_pokemon})
+            return jsonify({'random_pokemon_condicion': random_pokemon})
         else:
             return jsonify({'error': 'No se encontro Pokemon que coincida con la condicion'}), 404
 
