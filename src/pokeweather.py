@@ -41,11 +41,36 @@ def get_longest_pokemon_name(tipo):
     else:
         return jsonify({'error': 'Tipo no encontrado'}), 404
 
+
+# Funcion para determinar el tipo de Pokemon mas fuerte basado en la temperatura
+def get_tipo_mas_fuerte_segun_clima(temperatura):
+
+    # Agregue el resto de las clases en el else, limitando ICE hasta -10 Grados
+    if temperatura >= 30:
+        return 'fire'
+    elif temperatura >= 20:
+        return 'ground'
+    elif temperatura >= 10:
+        return 'normal'
+    elif temperatura >= 0:
+        return 'water'
+    elif temperatura >= -10:
+        return 'ice'
+    else:
+        types = ['unknown','dragon','shadow','dark','rock','grass','psychic','flying','bug','fighting''steel','ghost','electric''poison','fairy']
+        clase = random.choice(types)
+        return clase
+
+
+
 # Endpoint para obtener un Pokemon al azar que contenga alguna de las letras 'I','A' o 'M' y que sea del tipo específico más fuerte en base al clima actual de tu ciudad
 # #### FALTA CONDICION DEL CLIMA ####
-@app.route('/pokemon/random/condicion/<tipo>')
-def get_random_pokemon_condicion(tipo):
-    response = requests.get(f"https://pokeapi.co/api/v2/type/{tipo.lower()}")
+@app.route('/pokemon/random/condicion')
+def get_random_pokemon_condicion():
+
+    tipo_mas_fuerte = get_tipo_mas_fuerte_segun_clima(-1)
+
+    response = requests.get(f"https://pokeapi.co/api/v2/type/{tipo_mas_fuerte}")
     if response.status_code == 200:
         data = response.json()
         pokemons = [pokemon['pokemon']['name'] for pokemon in data['pokemon']]        
