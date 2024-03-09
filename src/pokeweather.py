@@ -33,7 +33,13 @@ def get_random_pokemon(tipo):
 # Endpoint para obtener el Pokemon con nombre mas largo segun tipo indicado
 @app.route('/pokemon/longest/<tipo>')
 def get_longest_pokemon_name(tipo):
-    pass
+    response = requests.get(f'https://pokeapi.co/api/v2/type/{tipo.lower()}')
+    if response.status_code == 200:
+        type_data = response.json()
+        longest_name = max(type_data['pokemon'], key=lambda x: len(x['pokemon']['name']))['pokemon']['name']
+        return jsonify({'type': tipo, 'longest_name': longest_name})
+    else:
+        return jsonify({'error': 'Type not found'}), 404
 
 # Endpoint para obtener un Pokemon al azar que contenga alguna de las letras 'I','A' o 'M' y que sea del tipo específico más fuerte en base al clima actual de tu ciudad
 @app.route('/pokemon/random/condicion')
