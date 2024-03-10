@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css')}}">
+{% endblock %}
+
+{% block body %} 
+<form class="form-signin" action="/login" method="POST">
+    <img class="mb-4" src="{{ url_for('static', filename='img/Logo.png')}}" alt="" width="247" height="49">
+    <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+    {% block loginFail %}
+    {% endblock %}
+    <div class="form-floating">
+      <input type="text" class="form-control" id="username" name="username" placeholder="Usuario" wfd-id="id0">
+      <label for="username">Usuario</label>
+    <kpm-field-badge type="default" loading="false" menu-type="login" class="kpm_input-field-button kpm_gray-key-icon" style="z-index: 3 !important;"></kpm-field-badge></div>
+    <div class="form-floating">
+      <input type="password" class="form-control" id="password" name="password" placeholder="Password" wfd-id="id1">
+      <label for="password">Password</label>
+    <kpm-field-badge type="default" loading="false" menu-type="login" class="kpm_input-field-button kpm_gray-key-icon" style="z-index: 3 !important;"></kpm-field-badge></div>
+
+    <div class="checkbox mb-3">
+      <label>
+        <input type="checkbox" value="remember-me" wfd-id="id2"> Remember me
+      </label>
+    </div>
+    <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+    <p class="mt-5 mb-3 text-muted">© 2017–2021</p>
+  </form>
+{% endblock %}

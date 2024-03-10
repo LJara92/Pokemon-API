@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template, redirect, url_for
 import requests
 import random
 import openmeteo_requests
@@ -75,15 +75,24 @@ def get_tipo_mas_fuerte_segun_clima(temperatura):
         return clase
 
 
-# Validacion de user y password 
-@app.route('/login', methods=['POST'])
+# Redireccionamiento directamente a Login
+@app.route('/')
+def index():
+    return redirect(url_for('login'))
+
+# Validacion de user y password
+@app.route('/login', methods=['GET','POST'])
 def login():
-    username = request.json.get('username', None)
-    password = request.json.get('password', None)
-    if username not in users or users[username] != password:
-        return jsonify({"msg": "Credenciales invalidas"}), 401
-    access_token = create_access_token(identity=username)
-    return jsonify(access_token=access_token), 200
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        if username not in users or users[username] != password:
+            return render_template('login_fail.html')
+        
+        access_token = create_access_token(identity=username)
+        return jsonify(access_token=access_token), 200
+    else:
+        return render_template('login.html')
 
 
 ### ----- Endpoints ----- ###
