@@ -39,8 +39,13 @@
 <br>
 
 {% if random_pokemon_condicion %}
+<h6>Region:</h6><p> {{ region }} </p>
+<h6>Temperatura actual:</h6><p> {{temperatura}} </p>
+<br>
+<h6>Tipo:</h6><p> {{ tipo_mas_fuerte }} </p>
 <h6>Nombre:</h6>
 <p>{{ random_pokemon_condicion }}</p>
+
 {% endif %}
 </div>
 

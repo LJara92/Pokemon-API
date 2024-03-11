@@ -42,6 +42,13 @@ def obtener_coordenadas():
     coordenadas = datos['loc'].split(',')
     return coordenadas
 
+def obtener_ubicacion():
+    url = 'https://ipinfo.io/json'
+    respuesta = requests.get(url)
+    datos = respuesta.json()
+    region = datos['region']
+    return region
+
 # Obtencion de la temperatura actual
 def obtener_temperatura_actual(latitude, longitude):
     
@@ -194,6 +201,8 @@ def get_random_pokemon_condicion():
     # Determinar el tipo de Pokemon mas fuerte segun el clima
     tipo_mas_fuerte = get_tipo_mas_fuerte_segun_clima(temperatura)
 
+    region = obtener_ubicacion()
+
     # Hacer la solicitud a la Poke API para obtener todos los Pokemon del tipo mas fuerte
     response = requests.get(f"https://pokeapi.co/api/v2/type/{tipo_mas_fuerte}")
     if response.status_code == 200:
@@ -205,7 +214,7 @@ def get_random_pokemon_condicion():
         if filtered_pokemons:
             random_pokemon = random.choice(filtered_pokemons)
             #return jsonify({'random_pokemon_condicion': random_pokemon})
-            return render_template('consulta.html', random_pokemon_condicion=random_pokemon)
+            return render_template('consulta.html', random_pokemon_condicion=random_pokemon, temperatura=temperatura, tipo_mas_fuerte=tipo_mas_fuerte, region=region)
         else:
             return jsonify({'error': 'No se encontro Pokemon que coincida con la condicion'}), 404
 
