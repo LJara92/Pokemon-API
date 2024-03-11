@@ -6,6 +6,7 @@ import requests_cache
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
 import string
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user
+import time
 
 def generar_contrasena():
     largo = 20
@@ -124,9 +125,10 @@ def home():
 ### ----- Endpoints ----- ###
 
 # Endpoint para obtener el tipo de un Pokemon segun su nombre
-@app.route('/pokemon/type/<nombre>')
+@app.route('/pokemon/type/<nombre>', methods=['POST'])
 @login_required
 def get_pokemon_type(nombre):
+    nombre = request.form['nombre']
     # Consultamos si existe el Pokemon con ese nombre
     response = requests.get(f'https://pokeapi.co/api/v2/pokemon/{nombre.lower()}')
     if response.status_code == 200:
@@ -137,9 +139,10 @@ def get_pokemon_type(nombre):
         return jsonify({'error': 'Pokemon no encontrado'}), 404
 
 # Endpoint para obtener un Pokemon al azar de un tipo/clase especifico
-@app.route('/pokemon/random/<tipo>')
+@app.route('/pokemon/random/<tipo>', methods=['POST'])
 @login_required
 def get_random_pokemon(tipo):
+    tipo = request.form['tipo']
     # Consultamos si existe el tipo de Pokemon con ese nombre
     response = requests.get(f'https://pokeapi.co/api/v2/type/{tipo.lower()}')
     if response.status_code == 200:
@@ -150,9 +153,10 @@ def get_random_pokemon(tipo):
         return jsonify({'error': 'Tipo no encontrado'}), 404
     
 # Endpoint para obtener el Pokemon con nombre mas largo segun tipo indicado
-@app.route('/pokemon/longest/<tipo>')
+@app.route('/pokemon/longest/<tipo>', methods=['POST'])
 @login_required
 def get_longest_pokemon_name(tipo):
+    tipo = request.form['tipo']
     response = requests.get(f'https://pokeapi.co/api/v2/type/{tipo.lower()}')
     if response.status_code == 200:
         type_data = response.json()
