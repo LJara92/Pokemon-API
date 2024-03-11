@@ -8,6 +8,7 @@
 
 
 {% block body %}
+
 <br>
 <img class="mb-4" src="{{ url_for('static', filename='img/Logo.png')}}" alt="" width="247" height="49">
 <h5>API para consultas de pokemon</h5>
@@ -16,6 +17,7 @@
 
 <div class="marco">    
     <form action="{{ url_for('get_pokemon_type', nombre='nombre') }}" method="post"> <!- No puedo hacer que en la URL en lugar de "nombre" se lee lo ingresado por el usuario->
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <p>Obtener el tipo de un Pokemon ingresando el nombre</p>
         <label for="tipo">Nombre del Pokemon:</label>
         <input type="text" id="nombre" name="nombre" required>
@@ -27,6 +29,7 @@
 
 <div class="marco">    
     <form action="{{ url_for('get_random_pokemon', tipo='tipo') }}" method="post"> <!- No puedo hacer que en la URL en lugar de "tipo" se lee lo ingresado por el usuario->
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <p>Obtener Pokemon random del tipo indicado</p>
         <label for="tipo">Tipo de Pokemon:</label>
         <input type="text" id="tipo" name="tipo" required>
@@ -38,6 +41,7 @@
 
 <div class="marco">    
     <form action="{{ url_for('get_longest_pokemon_name', tipo='tipo') }}" method="post"> <!- No puedo hacer que en la URL en lugar de "tipo" se lee lo ingresado por el usuario->
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <p>Obtener Pokemon con el nombre mas largo segun el tipo</p>
         <label for="tipo">Tipo de Pokemon:</label>
         <input type="text" id="tipo" name="tipo" required>
@@ -49,6 +53,7 @@
 
 <div class="marco">
     <form action="{{ url_for('get_random_pokemon_condicion') }}" method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <p>Obtemer Pokemon mas fuerte segun clima</p>
         <button type="submit" class="boton">Obtener Pokemon</button>
     </form>    
