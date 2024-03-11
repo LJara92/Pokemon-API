@@ -12,6 +12,7 @@
     <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
     {% block loginFail %}
     {% endblock %}
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"> 
     <div class="form-floating">
       <input type="text" class="form-control" id="username" name="username" placeholder="Usuario" wfd-id="id0">
       <label for="username">Usuario</label>

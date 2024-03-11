@@ -5,6 +5,7 @@ import openmeteo_requests
 import requests_cache
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
 import string
+from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user
 import time
 
@@ -15,6 +16,7 @@ def generar_contrasena():
     return contrasena
 
 app = Flask(__name__)
+csrf = CSRFProtect()
 app.config['SECRET_KEY'] = generar_contrasena()
 login_manager = LoginManager(app)
 
@@ -211,6 +213,7 @@ def get_random_pokemon_condicion():
         return jsonify({'error': 'Error al obtener el Pokemon'}), 500
 
 if __name__ == "__main__":
+    csrf.init_app(app)
     app.register_error_handler(401, status_401)
     app.register_error_handler(404, status_404)
     app.register_error_handler(405, status_405)
