@@ -1,9 +1,9 @@
-from flask import Flask, jsonify, request, render_template, redirect, url_for
+from flask import Flask, jsonify, request, render_template, redirect, url_for, make_response
 import requests
 import random
 import openmeteo_requests
 import requests_cache
-from flask_jwt_extended import JWTManager, jwt_required, create_access_token
+from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
 import string
 
 def generar_contrasena():
@@ -91,9 +91,16 @@ def login():
         
         access_token = create_access_token(identity=username)
         return jsonify(access_token=access_token), 200
+
     else:
         return render_template('login.html')
 
+
+@app.route('/home')
+@jwt_required()
+def home():
+    current_user = get_jwt_identity()
+    return render_template('home.html', username=current_user)
 
 ### ----- Endpoints ----- ###
 
