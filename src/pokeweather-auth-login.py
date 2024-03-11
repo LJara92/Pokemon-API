@@ -18,6 +18,8 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = generar_contrasena()
 login_manager = LoginManager(app)
 
+
+
 # Configuracion de sesion de cache y reintento en caso de error para la API de Open-Meteo
 cache_session = requests_cache.CachedSession('.cache', expire_after=3600)
 openmeteo = openmeteo_requests.Client(session=cache_session)
@@ -98,6 +100,15 @@ def get_tipo_mas_fuerte_segun_clima(temperatura):
 # Redireccionamiento directamente a Login
 @app.route('/')
 def index():
+    return redirect(url_for('login'))
+
+def status_401(error):
+    return redirect(url_for('login'))
+
+def status_404(error):
+    return redirect(url_for('login'))
+
+def status_405(error):
     return redirect(url_for('login'))
 
 # Validacion de user y password
@@ -200,4 +211,8 @@ def get_random_pokemon_condicion():
         return jsonify({'error': 'Error al obtener el Pokemon'}), 500
 
 if __name__ == "__main__":
+    app.register_error_handler(401, status_401)
+    app.register_error_handler(404, status_404)
+    app.register_error_handler(405, status_405)
     app.run(host="0.0.0.0", port=5000, debug=True)
+    
