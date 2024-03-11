@@ -134,7 +134,8 @@ def get_pokemon_type(nombre):
     if response.status_code == 200:
         pokemon_data = response.json()
         types = [type_data['type']['name'] for type_data in pokemon_data['types']]
-        return jsonify({'name': nombre, 'types': types})
+        tipo = types[0]
+        return render_template('consulta.html', pokemon_name=nombre, pokemon_types=tipo)
     else:
         return jsonify({'error': 'Pokemon no encontrado'}), 404
 
@@ -148,7 +149,8 @@ def get_random_pokemon(tipo):
     if response.status_code == 200:
         type_data = response.json()
         pokemon_nombre = [pokemon['pokemon']['name'] for pokemon in type_data['pokemon']]
-        return jsonify({'type': tipo, 'random_pokemon': random.choice(pokemon_nombre)}) #Usando random elegimos el nombre de un pokemos al azar
+        #return jsonify({'type': tipo, 'random_pokemon': random.choice(pokemon_nombre)}) #Usando random elegimos el nombre de un pokemos al azar
+        return render_template('consulta.html', random_pokemon=random.choice(pokemon_nombre))
     else:
         return jsonify({'error': 'Tipo no encontrado'}), 404
     
@@ -161,7 +163,8 @@ def get_longest_pokemon_name(tipo):
     if response.status_code == 200:
         type_data = response.json()
         longest_name = max(type_data['pokemon'], key=lambda x: len(x['pokemon']['name']))['pokemon']['name']
-        return jsonify({'type': tipo, 'longest_name': longest_name})
+        #return jsonify({'type': tipo, 'longest_name': longest_name})
+        return render_template('consulta.html', longest_name=longest_name)
     else:
         return jsonify({'error': 'Tipo no encontrado'}), 404
 
@@ -188,7 +191,8 @@ def get_random_pokemon_condicion():
         # Comprobamos si hay algun valor en la lista
         if filtered_pokemons:
             random_pokemon = random.choice(filtered_pokemons)
-            return jsonify({'random_pokemon_condicion': random_pokemon})
+            #return jsonify({'random_pokemon_condicion': random_pokemon})
+            return render_template('consulta.html', random_pokemon_condicion=random_pokemon)
         else:
             return jsonify({'error': 'No se encontro Pokemon que coincida con la condicion'}), 404
 

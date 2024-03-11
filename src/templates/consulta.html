@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Consulta{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css')}}">
+{% endblock %}
+
+
+{% block body %}
+<br>
+<img class="mb-4" src="{{ url_for('static', filename='img/Logo.png')}}" alt="" width="247" height="49">
+
+<h5>Resultados de la consulta</h5>
+
+<br>
+<div class="marco">
+{% if pokemon_name %}
+
+    <h6>Nombre:</h6>
+    <p>{{ pokemon_name }}</p>
+
+{% endif %}
+
+<br>
+
+{% if random_pokemon %}
+<h6>Nombre:</h6>
+<p>{{ random_pokemon }}</p>
+{% endif %}
+
+<br>
+
+{% if longest_name %}
+<h6>Nombre:</h6>
+<p>{{ longest_name }}</p>
+{% endif %}
+
+<br>
+
+{% if random_pokemon_condicion %}
+<h6>Nombre:</h6>
+<p>{{ random_pokemon_condicion }}</p>
+{% endif %}
+</div>
+
+{% endblock %}
