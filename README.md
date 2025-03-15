@@ -1,54 +1,102 @@
 # Pokeweather
-## MELI Challenge
-Este challenge consiste en crear una API que consulte a la API publica de Pokemon (pokeapi.co) ciertos endpoints y agregar un sistema de autenticacion
+
+## Descripción del Proyecto
+
+Pokeweather es una API desarrollada para un desafío de una entrevista de Mercado Libre, que interactúa con la API pública de Pokémon (pokeapi.co) para consultar ciertos endpoints y añade un sistema de autenticación.
+
+## Tabla de Contenidos
+
+- [Requisitos](#requisitos)
+- [Instalación](#instalación)
+- [Uso](#uso)
+- [Endpoints](#endpoints)
+- [Tecnologías Utilizadas](#tecnologías-utilizadas)
+- [Contribuciones](#contribuciones)
+- [Licencia](#licencia)
+- [Contacto](#contacto)
 
 ## Requisitos
-- Python
+
+Antes de comenzar, asegúrate de tener instalados los siguientes componentes:
+
+- Python 3.x
 - Flask
 
-## Instalacion
-1. Realizar una copia del repositorio
+## Instalación
 
-```bash
-git clone https://github.com/LJara92/Pokemon-API.git
+Sigue estos pasos para configurar el proyecto en tu entorno local:
 
-cd Pokemon-API
-```
-2. Instalar dependencias
+1. Clona este repositorio:
 
-```bash
-pip install -r requirements.txt
-```
+   ```bash
+   git clone https://github.com/LJara92/Pokemon-API.git
+   ```
+
+2. Accede al directorio del proyecto:
+
+   ```bash
+   cd Pokemon-API
+   ```
+
+3. Instala las dependencias necesarias:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
 
 ## Uso
 
-1. Ejecutar la API
+Para ejecutar la API, realiza lo siguiente:
 
-```bash
-python src/pokeweather-auth-login.py
-```
+1. Inicia la aplicación:
 
-2. Accede a la API en tu navegador web utilizando la direccion `http://localhost:5000`
+   ```bash
+   python src/pokeweather-auth-login.py
+   ```
 
-3. Inicia sesion con las credenciales
-```bash
-User: admin
-Password: admin123
+2. Accede a la API a través de tu navegador web en la dirección `http://localhost:5000`.
 
----------------------
+3. Inicia sesión con las siguientes credenciales:
 
-User: user
-Password: user123
-```
+   - **Administrador:**
+     - Usuario: admin
+     - Contraseña: admin123
+   - **Usuario:**
+     - Usuario: user
+     - Contraseña: user123
 
-4. Una vez dentro, vas a poder acceder a diferentes endpoints desde la pagina de inicio
-
-** No se podra acceder a los endpoints si no estas logueado **
+   > **Nota:** Es obligatorio iniciar sesión para acceder a los endpoints.
 
 ## Endpoints
 
-- `/pokemon/type/<nombre>` (POST): Obtiene el tipo de un Pokemon segun su nombre
-- `/pokemon/random/<tipo>` (POST): Obtiene un Pokemon al azar de un tipo especifico
-- `/pokemon/longest/<tipo>` (POST): Obtiene el Pokemon con el nombre mas largo segun un tipo dado
-- `/pokemon/random/condicion` (POST): Obtiene un Pokemon al azar que cumpla cierta condicion climatica y ciertas letras en el nombre
+La API ofrece los siguientes endpoints:
 
+- `POST /pokemon/type/<nombre>`: Obtiene el tipo de un Pokémon según su nombre.
+- `POST /pokemon/random/<tipo>`: Obtiene un Pokémon al azar de un tipo específico.
+
+## Tecnologías Utilizadas
+
+- Python
+- Flask
+- PokeAPI (https://pokeapi.co/)
+
+## Contribuciones
+
+Las contribuciones son bienvenidas. Si deseas colaborar, por favor sigue estos pasos:
+
+1. Haz un fork del proyecto.
+2. Crea una nueva rama para tu funcionalidad (`git checkout -b feature/nueva-funcionalidad`).
+3. Realiza tus modificaciones y haz commit de los cambios (`git commit -m 'Añadir nueva funcionalidad'`).
+4. Haz push a la rama (`git push origin feature/nueva-funcionalidad`).
+5. Abre una Pull Request.
+
+## Licencia
+
+Este proyecto está bajo la Licencia MIT.
+
+## Contacto
+
+Para consultas o más información, puedes contactarme a través de:
+
+- Correo electrónico: [jara.lautaro@gmail.com](mailto:jara.lautaro@gmail.com)
+- LinkedIn: [Lautaro Jara](https://www.linkedin.com/in/lautaro-jara/)
